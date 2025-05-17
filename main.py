@@ -116,7 +116,8 @@ def generarJsonHabilidades(datosfiltradosHabilidades):
     with open(pathHabilidades, "w", encoding="utf-8") as file:
         json.dump(datosfiltradosHabilidades, file, indent=4, ensure_ascii=False)
         print("json creado exitosamente")
-         # Actualizar usuario
+        
+# Actualizar usuario
 def actualizar_usuario(usuario_id):
     if usuario_id not in usuarios:
         print("Error: ID de usuario no encontrado.")
@@ -214,7 +215,7 @@ usuarios = {
             
             "formacionAcademica" : [{"Universidad": "ECCI","Titulo":"Profesional lenguas modernas", "añoGraduación": "2024"}],
             
-            "experienciaProfesional" : [{"Empresa":"Teleperformance", "Cargo":"Asesor Bilingüe", "Duración": "10"}, {"Empresa":"Concentrix", "Cargo":"Asesor Bilingüe", "Duración": "4 meses"}],
+            "experienciaProfesional" : [{"Empresa":"Teleperformance", "Cargo":"Asesor Bilingüe", "Duración": "10"}, {"Empresa":"Concentrix", "Cargo":"Asesor Bilingüe", "Duración": "4"}],
             "referenciasPersonales": [{"nombre":"miguel angel arias marin II", "relación": "vecino", "telefono": "3205118016"}],
             "habilidadesAdicionales": ["HTML","CSS","Python","Inglés B2", "Diploma Pedagogía"]
     }
@@ -238,373 +239,437 @@ def actualizar_usuario(usuario_id):
     if usuario_id not in usuarios:
         print("Error: ID de usuario no encontrado.")
         return
-
-añadir=True
-while añadir:
-    serial += 1
-    usuarios[str(serial)] = {}
-    listaFormaciones=[]
-    listaReferencias=[]
-    experiencias = []
-    habilidades = []
-
-    #DatosPersonales
-    datosPersonales= print("A continuacion se le pediran sus datos personales")
+    
+Menu=True
+while Menu:
+    print("="*50)
+    print("Bienvenido al programa de hojas de vida!")
+    print("1. Crea y añade hojas de vida")
+    print("2. Consulta una hoja de vida")
+    print("3. Actualiza la información registrada")
+    print("4. Genera reportes")
+    print("5. Salir")
+    print("="*50)
     while True:
-        nombre=input("Ingresa tu nombre: ")
-        if nombre.isalpha():
+        option = input("Selecciona una opción: 1/2/3/4/5: ")
+        if option.isdigit() and int(option) >= 1 and int(option) <=5:
             break
         else:
-            print("Ingresa un nombre valido.")
-    while True:
-        identificacion=input("Agrega tu numero de identidad: ")
-        if identificacion.isdigit() and 8<= len(identificacion) <= 10 :
-            break
-        else:
-            print("La identificacion no es válida: ")
-    while True:    
-        fecha_nacimiento=input("Ingresa tu fecha de nacimiento (DD/MM/AA): ")
-        try:
-            fecha = datetime.strptime(fecha_nacimiento, "%d/%m/%Y")
-            hoy = datetime.now()
-            if fecha >= hoy:
-                print("La fecha no puede ser el dia actual")
-            else:
-                print("Fecha válida:", fecha.strftime("%d/%m/%Y"))
-            break
-        except ValueError:
-            print("Error: Formato de fecha inválido. Usa DD/MM/YYYY (ej: 15/05/2000).")
-    while True:
-        celular_numero=input("Ingresa tu numero de celular: ")
-        if celular_numero.isdigit() and len(celular_numero) == 10:
-            break
-        else:
-            print("El numero de celular no es válido")
-    while True:
-        direccion=input("Ingresa la direccion de tu vivienda: ")
-        if re.match(r'^[a-zA-Z0-9\sáéíóúñÁÉÍÓÚÑ#\-/.,()]+$', direccion):
-            if len(direccion) >=5:
-                print("Direccion valida ")
-                break
-            else:
-                print("La direccion debe de contener al menos 5 caracteres (Debe ser real)")
-        else:
-            print("Error: La dirección solo puede contener letras, números, espacios, #, -, /, ., ,, () y acentos.")
-    while True:
-        correo_elect=input("Ingresa tu correo electronico:")
-        if  re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo_elect):
-            if len(correo_elect) <=100:
-                    print("El correo ha sido agregado")
-                    break
-            else:
-                print("El correo debe tener minimo 100 caracteres")
-        else:
-            print("El correo debe de tener los siguientes caracteres(ej. ejemplo@dominio.com)")
-    datosPersonales = datosPersonalesDict(nombre,identificacion,fecha_nacimiento,celular_numero,direccion,correo_elect)   
+            print("Por favor ingresa una opción válida")
+    if option == "1":
+        añadir=True
+        while añadir:
+            serial += 1
+            usuarios[str(serial)] = {}
+            listaFormaciones=[]
+            listaReferencias=[]
+            experiencias = []
+            habilidades = []
 
-    #formacion académica:
-    print("A continuacion se le pediran su información académica")
-    while True:
-        while True: 
-            universidad = input("Ingresa el nombre de la universidad: ")
-            if universidad.replace(" ", "").isalpha(): 
-                break
-            else:
-                print("Ingresa un nombre válido")
-        while True: 
-            titulo = input("Ingresa el nombre del título: ")
-            if titulo.replace(" ", "").isalpha(): 
-                break
-            else:
-                print("Ingresa un nombre válido")
-        while True: 
-            año = input("Ingresa el año de graduación: ")
-            if año.isdigit(): 
-                break
-            else:
-                print("Ingresa un año válido")
-                                
-        formacion = formaciónDict(universidad,titulo,año)
-        listaFormaciones.append(formacion)
-        while True: 
-            reset = input("¿Quieres añadir más formación profesional? 1.Si/2.No: ")
-            if reset.isdigit()==False:
-                print("Ingresa una opción válida (1/2)")
-            elif int(reset) != 1 and int(reset) != 2:
-                print("Ingresa una opción válida (1/2)")
-            else:
-                break
-        if int(reset) == 2:
-            break               
-
-    #Experiencias
-    print("A continuacion se le pedirá su experiencia laboral")
-    experiencia = input("¿Tienes experiencia laboral? 1.Si/2.No: ")
-    while True:
-        
-        if experiencia == "1":
+            #DatosPersonales
+            datosPersonales= print("A continuacion se le pediran sus datos personales")
             while True:
-                Empresa = input("Empresa donde trabajo: ")
-                if  Empresa.replace(" ", "").isalpha():
+                nombre=input("Ingresa tu nombre: ")
+                if nombre.isalpha():
                     break
                 else:
-                    print("Ingrese un nombre valido\n")
+                    print("Ingresa un nombre válido.")
             while True:
-                    cargo = input("¿Que cargo ejercias?: ")
-                    if  cargo.replace(" ", "").isalpha():
-                        break
-                    else:
-                        print("Ingrese un nombre valido\n")
-            while True:
-                    duracion = input("¿Tiempo de duracion (cantidad en años)?: ")
-                    if  duracion.isdigit():
-                        break
-                    else:
-                        print("Ingrese un nombre valido\n")
-                        
-            informacion = {"Empresa":Empresa, "Cargo":cargo, "Duración": duracion}
-            
-            experiencias.append(informacion)            
-            salir = input("¿Quieres ingresar mas expreciencias laborales? (si/no): ")
-            if salir == "2":
-                break
-        else:
-            print("a bueno")
-            break
-
-    #referenciasPersonales
-    print("A continuacion se le pedirán sus referencias personales")
-    while True:
-        while True: 
-            nombreRef = input("Ingresa el nombre de tu referencia : ")
-            if nombreRef.replace(" ", "").isalpha(): 
-                break
-            else:
-                print("Ingresa un nombre válido")
-        while True: 
-            relacion = input("Ingresa tu relación con esta persona: ")
-            if relacion.replace(" ", "").isalpha(): 
-                break
-            else:
-                print("Ingresa un dato válido")
-        while True: 
-            telefonoRef = input("Ingresa el teléfono de tu referencia: ")
-            if telefonoRef.isdigit() and len(telefonoRef) == 10: 
-                break
-            else:
-                print("Ingresa un teléfono válido")
-                                
-        referencias = referenciasDict(nombreRef,relacion,telefonoRef)
-        listaReferencias.append(referencias)
-        while True: 
-            reset = input("¿Quieres añadir más referencias 1.Si/2.No: ")
-            if reset.isdigit()==False:
-                print("Ingresa una opción válida (1/2)")
-            elif int(reset) != 1 and int(reset) != 2:
-                print("Ingresa una opción válida (1/2)")
-            else:
-                break
-        if int(reset) == 2:
-            break
-            
-    #Habilidades adicionales
-    habilidadesAdicionales = input("¿Tienes habilidades adicionales? 1.Si/2.No: ")
-    while True: 
-        if habilidadesAdicionales == "1":
-            while True:
-                habilidad = input("Digite una habilidad: ")
-                if  habilidad.replace(" ", "").isalpha():
+                identificacion=input("Agrega tu numero de identidad: ")
+                if identificacion.isdigit() and 8<= len(identificacion) <= 10 :
                     break
                 else:
-                    print("Ingrese texto valido valido\n")
-                                
-            habilidades.append(habilidad)            
-            salir = input("¿Quieres ingresar otra habilidad? 1.Si/2.No: ")
-            if salir == "2":
-                break
-        else:
-            break
-            
-    usuarios[str(serial)]["datosPersonales"] = datosPersonales
-    usuarios[str(serial)]["formacionAcademica"] = listaFormaciones
-    usuarios[str(serial)]["experienciaProfesional"] = experiencias
-    usuarios[str(serial)]["referenciasPersonales"] = listaReferencias
-    usuarios[str(serial)]["habilidadesAdicionales"] = habilidades
-    
-    generar_hoja_de_vida(usuarios[str(serial)],"miguel.txt")
-    
-    
-    salir = input("¿Quieres añadir otro usuario? 1.Si/2.No: ")
-    if salir == "2":
-        añadir=False
-
-   #Consultar hojas de vida 
-print("Bienvenido a consultar hojas de vida\n")
-opciones = input("(1).Buscar por informacion  \n(2).filtrar informacion \n(3).Correo electronico \n>>>")
-match opciones:
-    case "1":
-        print("Opciones de busqueda: ")
-        opciones = input("(1).Nombre  \n(2).documento \n(3).Correo electronico \n>>>")
-
-        match opciones:
-            case "1":
-                console.print("[bold cyan]Búsqueda por nombre[/bold cyan]")
-                nombre = input("Ingrese el nombre a buscar: \n>>> ")
-                mostrarUsuarios(nombre, "nombre")
-            case "2":
-                console.print("[bold cyan]Búsqueda por documento[/bold cyan]")
-                documento = input("Ingrese el documento a buscar: \n>>> ")
-                mostrarUsuarios(documento, "documento")
-            case "3":
-                console.print("[bold cyan]Búsqueda por correo[/bold cyan]")
-                email = input("Ingrese el correo a buscar: \n>>> ")
-                mostrarUsuarios(email, "correo")
-    case "2":
-        print("Opciones de filtros: ")
-        opciones = input("(1).Años de experiencia  \n(2).Titulo profesional \n(3).habilidades \n>>>")
-        match opciones:
-            case "1":
-                print("filtrar por años de experiencia")
-                años_experiencia = input("Digite el minimo de años de experiencia: ")
-                mostrarUsuarios(años_experiencia,"Duracion")
-            case "2":
-                print("filtrar por titulo profesional")
-                titulo_profesional = input("Digite el minimo de años de experiencia: ")
-                mostrarUsuarios(titulo_profesional,"Titulo")
-
- # Actualizar usuario
-def actualizar_usuario(usuario_id): 
-    if usuario_id not in usuarios:
-        print("Error: ID de usuario no encontrado.")
-        return
-    
-    while True:
-        print("\nOpciones de actualización para el usuario", usuario_id)
-        print("1. Añadir nueva experiencia o formación")
-        print("2. Editar datos personales o de contacto")
-        print("3. Agregar habilidades y referencias")
-        print("4. Volver al menú principal")
-
-        try:
-            seleccione_act = int(input("Selecciona una opción (1-4): "))
-        except ValueError:
-            print("Error: Ingresa un número válido.")
-            continue
-
-        if seleccione_act == 1:
-            tipo = input("¿Deseas añadir experiencia (1) o formación (2)? Ingresa 1 o 2: ")
-            if tipo == "1":
-                while True:
-                    empresa = input("Ingresa el nombre de la empresa: ")
-                    if empresa.replace(" ", "").isalpha():
+                    print("La identificacion no es válida: ")
+            while True:    
+                fecha_nacimiento=input("Ingresa tu fecha de nacimiento (DD/MM/AA): ")
+                try:
+                    fecha = datetime.strptime(fecha_nacimiento, "%d/%m/%Y")
+                    hoy = datetime.now()
+                    if fecha >= hoy:
+                        print("La fecha no puede ser el dia actual")
+                    else:
+                        print("Fecha válida:", fecha.strftime("%d/%m/%Y"))
+                    break
+                except ValueError:
+                    print("Error: Formato de fecha inválido. Usa DD/MM/YYYY (ej: 15/05/2000).")
+            while True:
+                celular_numero=input("Ingresa tu numero de celular: ")
+                if celular_numero.isdigit() and len(celular_numero) == 10:
+                    break
+                else:
+                    print("El numero de celular no es válido")
+            while True:
+                direccion=input("Ingresa la direccion de tu vivienda: ")
+                if re.match(r'^[a-zA-Z0-9\sáéíóúñÁÉÍÓÚÑ#\-/.,()]+$', direccion):
+                    if len(direccion) >=5:
+                        print("Direccion valida ")
                         break
-                    print("Ingrese un nombre valido\n")
-                while True:
-                    cargo = input("Ingresa el cargo: ")
-                    if cargo.replace(" ", "").isalpha():
-                        break
-                    print("Ingrese un nombre valido\n")
-                while True:
-                    duracion = input("Ingresa la duración (cantidad en años): ")
-                    if duracion.isdigit():
-                        break
-                    print("Ingrese un número valido\n")
-                informacion = {"Empresa": empresa, "Cargo": cargo, "Duración": duracion}
-                usuarios[usuario_id]["experienciaProfesional"].append(informacion)
-                print("Experiencia añadida.")
-            elif tipo == "2":
-                while True:
+                    else:
+                        print("La direccion debe de contener al menos 5 caracteres (Debe ser real)")
+                else:
+                    print("Error: La dirección solo puede contener letras, números, espacios, #, -, /, ., ,, () y acentos.")
+            while True:
+                correo_elect=input("Ingresa tu correo electronico:")
+                if  re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo_elect):
+                    if len(correo_elect) <=100:
+                            print("El correo ha sido agregado")
+                            break
+                    else:
+                        print("El correo debe tener minimo 100 caracteres")
+                else:
+                    print("El correo debe de tener los siguientes caracteres(ej. ejemplo@dominio.com)")
+            datosPersonales = datosPersonalesDict(nombre,identificacion,fecha_nacimiento,celular_numero,direccion,correo_elect)   
+
+            #formacion académica:
+            print("A continuacion se le pediran su información académica")
+            while True:
+                while True: 
                     universidad = input("Ingresa el nombre de la universidad: ")
-                    if universidad.replace(" ", "").isalpha():
+                    if universidad.replace(" ", "").isalpha(): 
                         break
-                    print("Ingresa un nombre válido")
-                while True:
+                    else:
+                        print("Ingresa un nombre válido")
+                while True: 
                     titulo = input("Ingresa el nombre del título: ")
-                    if titulo.replace(" ", "").isalpha():
+                    if titulo.replace(" ", "").isalpha(): 
                         break
-                    print("Ingresa un nombre válido")
-                while True:
+                    else:
+                        print("Ingresa un nombre válido")
+                while True: 
                     año = input("Ingresa el año de graduación: ")
-                    if año.isdigit():
+                    if año.isdigit(): 
                         break
-                    print("Ingresa un año válido")
-                formacion = formaciónDict(universidad, titulo, año)
-                usuarios[usuario_id]["formacionAcademica"].append(formacion)
-                print("Formación añadida.")
-            else:
-                print("Opción inválida.")
+                    else:
+                        print("Ingresa un año válido")
+                                        
+                formacion = formaciónDict(universidad,titulo,año)
+                listaFormaciones.append(formacion)
+                while True: 
+                    reset = input("¿Quieres añadir más formación profesional? 1.Si/2.No: ")
+                    if reset.isdigit()==False:
+                        print("Ingresa una opción válida (1/2)")
+                    elif int(reset) != 1 and int(reset) != 2:
+                        print("Ingresa una opción válida (1/2)")
+                    else:
+                        break
+                if int(reset) == 2:
+                    break               
 
-        elif seleccione_act == 2:
-            print("\nDatos actuales:", usuarios[usuario_id]["datosPersonales"])
-            tipo = input("¿Deseas cambiar dirección (1) o número (2)? Ingresa 1 o 2: ")
-            if tipo == "1":
-                while True:
-                    direccion = input("Ingresa la nueva dirección: ")
-                    if re.match(r'^[a-zA-Z0-9\sáéíóúñÁÉÍÓÚÑ#\-/.,()]+$', direccion):
-                        if len(direccion) >= 5:
-                            print("Dirección valida ")
-                            usuarios[usuario_id]["datosPersonales"]["dirección"] = direccion
-                            print("Dirección actualizada.")
+            #Experiencias
+            print("A continuacion se le pedirá su experiencia laboral")
+            experiencia = input("¿Tienes experiencia laboral? 1.Si/2.No: ")
+            while True:
+                
+                if experiencia == "1":
+                    while True:
+                        Empresa = input("Empresa donde trabajó: ")
+                        if  Empresa.replace(" ", "").isalpha():
                             break
                         else:
-                            print("La dirección debe contener al menos 5 caracteres")
-                    else:
-                        print("Error: La dirección solo puede contener letras, números, espacios, #, -, /, ., ,, () y acentos.")
-            elif tipo == "2":
-                while True:
-                    celular_numero = input("Ingresa el nuevo número de celular: ")
-                    if celular_numero.isdigit() and len(celular_numero) == 10:
-                        usuarios[usuario_id]["datosPersonales"]["contacto"] = celular_numero
-                        print("Número actualizado.")
+                            print("Ingrese un nombre válido\n")
+                    while True:
+                            cargo = input("¿Que cargo ejercias?: ")
+                            if  cargo.replace(" ", "").isalpha():
+                                break
+                            else:
+                                print("Ingrese un nombre válido\n")
+                    while True:
+                            duracion = input("¿Tiempo de duración (cantidad en años)?: ")
+                            if  duracion.isdigit():
+                                break
+                            else:
+                                print("Ingrese un nombre válido\n")
+                                
+                    informacion = {"Empresa":Empresa, "Cargo":cargo, "Duración": duracion}
+                    
+                    experiencias.append(informacion)            
+                    salir = input("¿Quieres ingresar mas expreciencias laborales? (si/no): ")
+                    if salir == "2":
+                        break
+                else:
+                    print("a bueno")
+                    break
+
+            #referenciasPersonales
+            print("A continuacion se le pedirán sus referencias personales")
+            while True:
+                while True: 
+                    nombreRef = input("Ingresa el nombre de tu referencia : ")
+                    if nombreRef.replace(" ", "").isalpha(): 
                         break
                     else:
-                        print("El número de celular no es válido")
-            else:
-                print("Opción inválida.")
-
-        elif seleccione_act == 3:
-            tipo = input("¿Deseas añadir habilidad (1) o referencia (2)? Ingresa 1 o 2: ")
-            if tipo == "1":
-                while True:
-                    habilidad = input("Ingresa una habilidad: ")
-                    if habilidad.replace(" ", "").isalpha():
-                        if habilidad not in usuarios[usuario_id]["habilidadesAdicionales"]:
-                            usuarios[usuario_id]["habilidadesAdicionales"].append(habilidad)
-                            print("Habilidad añadida.")
-                            break
+                        print("Ingresa un nombre válido")
+                while True: 
+                    relacion = input("Ingresa tu relación con esta persona: ")
+                    if relacion.replace(" ", "").isalpha(): 
+                        break
+                    else:
+                        print("Ingresa un dato válido")
+                while True: 
+                    telefonoRef = input("Ingresa el teléfono de tu referencia: ")
+                    if telefonoRef.isdigit() and len(telefonoRef) == 10: 
+                        break
+                    else:
+                        print("Ingresa un teléfono válido")
+                                        
+                referencias = referenciasDict(nombreRef,relacion,telefonoRef)
+                listaReferencias.append(referencias)
+                while True: 
+                    reset = input("¿Quieres añadir más referencias 1.Si/2.No: ")
+                    if reset.isdigit()==False:
+                        print("Ingresa una opción válida (1/2)")
+                    elif int(reset) != 1 and int(reset) != 2:
+                        print("Ingresa una opción válida (1/2)")
+                    else:
+                        break
+                if int(reset) == 2:
+                    break
+                    
+            #Habilidades adicionales
+            habilidadesAdicionales = input("¿Tienes habilidades adicionales? 1.Si/2.No: ")
+            while True: 
+                if habilidadesAdicionales == "1":
+                    while True:
+                        habilidad = input("Digite una habilidad: ")
+                        if  habilidad.isdigit():
+                            print("Ingrese texto válido\n")
                         else:
-                            print("Error: La habilidad ya existe.")
+                            break
+                    habilidades.append(habilidad)            
+                    salir = input("¿Quieres ingresar otra habilidad? 1.Si/2.No: ")
+                    if salir == "2":
+                        break
+                else:
+                    break
+                    
+            usuarios[str(serial)]["datosPersonales"] = datosPersonales
+            usuarios[str(serial)]["formacionAcademica"] = listaFormaciones
+            usuarios[str(serial)]["experienciaProfesional"] = experiencias
+            usuarios[str(serial)]["referenciasPersonales"] = listaReferencias
+            usuarios[str(serial)]["habilidadesAdicionales"] = habilidades
+            
+            generar_hoja_de_vida(usuarios[str(serial)],f"{nombre}.txt")
+            
+            salir = input("¿Quieres añadir otro usuario? 1.Si/2.No: ")
+            if salir == "2":
+                añadir=False
+    if option == "2":
+        #Consultar hojas de vida 
+        print("Bienvenido a consultar hojas de vida\n")
+        opciones = input("(1).Buscar por informacion  \n(2).filtrar informacion \n(3).Correo electronico \n>>>")
+        match opciones:
+            case "1":
+                print("Opciones de busqueda: ")
+                opciones = input("(1).Nombre  \n(2).documento \n(3).Correo electronico \n>>>")
+                match opciones:
+                    case "1":
+                        console.print("[bold cyan]Búsqueda por nombre[/bold cyan]")
+                        nombre = input("Ingrese el nombre a buscar: \n>>> ")
+                        mostrarUsuarios(nombre, "nombre")
+                    case "2":
+                        console.print("[bold cyan]Búsqueda por documento[/bold cyan]")
+                        documento = input("Ingrese el documento a buscar: \n>>> ")
+                        mostrarUsuarios(documento, "documento")
+                    case "3":
+                        console.print("[bold cyan]Búsqueda por correo[/bold cyan]")
+                        email = input("Ingrese el correo a buscar: \n>>> ")
+                        mostrarUsuarios(email, "correo")
+            case "2":
+                print("Opciones de filtros: ")
+                opciones = input("(1).Años de experiencia  \n(2).Titulo profesional \n(3).habilidades \n>>>")
+                match opciones:
+                    case "1":
+                        print("filtrar por años de experiencia")
+                        años_experiencia = input("Digite el minimo de años de experiencia: ")
+                        mostrarUsuarios(años_experiencia,"Duracion")
+                    case "2":
+                        print("filtrar por titulo profesional")
+                        titulo_profesional = input("Digite el minimo de años de experiencia: ")
+                        mostrarUsuarios(titulo_profesional,"Titulo")
+    if option == "3":
+        # Actualizar usuario
+        def actualizar_usuario(usuario_id): 
+            if usuario_id not in usuarios:
+                print("Error: ID de usuario no encontrado.")
+                return
+            
+            while True:
+                print("\nOpciones de actualización para el usuario", usuario_id)
+                print("1. Añadir nueva experiencia o formación")
+                print("2. Editar datos personales o de contacto")
+                print("3. Agregar habilidades y referencias")
+                print("4. Volver al menú principal")
+
+                try:
+                    seleccione_act = int(input("Selecciona una opción (1-4): "))
+                except ValueError:
+                    print("Error: Ingresa un número válido.")
+                    continue
+
+                if seleccione_act == 1:
+                    tipo = input("¿Deseas añadir experiencia (1) o formación (2)? Ingresa 1 o 2: ")
+                    if tipo == "1":
+                        while True:
+                            empresa = input("Ingresa el nombre de la empresa: ")
+                            if empresa.replace(" ", "").isalpha():
+                                break
+                            print("Ingrese un nombre válido\n")
+                        while True:
+                            cargo = input("Ingresa el cargo: ")
+                            if cargo.replace(" ", "").isalpha():
+                                break
+                            print("Ingrese un nombre válido\n")
+                        while True:
+                            duracion = input("Ingresa la duración (cantidad en años): ")
+                            if duracion.isdigit():
+                                break
+                            print("Ingrese un número válido\n")
+                        informacion = {"Empresa": empresa, "Cargo": cargo, "Duración": duracion}
+                        usuarios[usuario_id]["experienciaProfesional"].append(informacion)
+                        print("Experiencia añadida.")
+                    elif tipo == "2":
+                        while True:
+                            universidad = input("Ingresa el nombre de la universidad: ")
+                            if universidad.replace(" ", "").isalpha():
+                                break
+                            print("Ingresa un nombre válido")
+                        while True:
+                            titulo = input("Ingresa el nombre del título: ")
+                            if titulo.replace(" ", "").isalpha():
+                                break
+                            print("Ingresa un nombre válido")
+                        while True:
+                            año = input("Ingresa el año de graduación: ")
+                            if año.isdigit():
+                                break
+                            print("Ingresa un año válido")
+                        formacion = formaciónDict(universidad, titulo, año)
+                        usuarios[usuario_id]["formacionAcademica"].append(formacion)
+                        print("Formación añadida.")
                     else:
-                        print("Ingrese texto valido\n")
-            elif tipo == "2":
-                while True:
-                    nombreRef = input("Ingresa el nombre de la referencia: ")
-                    if nombreRef.replace(" ", "").isalpha():
-                        break
-                    print("Ingresa un nombre válido")
-                while True:
-                    relacion = input("Ingresa la relación con esta persona: ")
-                    if relacion.replace(" ", "").isalpha():
-                        break
-                    print("Ingresa un dato válido")
-                while True:
-                    telefonoRef = input("Ingresa el teléfono de la referencia: ")
-                    if telefonoRef.isdigit() and len(telefonoRef) == 10:
-                        break
-                    print("Ingresa un teléfono válido")
-                referencias = referenciasDict(nombreRef, relacion, telefonoRef)
-                usuarios[usuario_id]["referenciasPersonales"].append(referencias)
-                print("Referencia añadida.")
-            else:
-                print("Opción inválida.")
+                        print("Opción inválida.")
 
-        elif seleccione_act == 4:
-            break
+                elif seleccione_act == 2:
+                    print("\nDatos actuales:", usuarios[usuario_id]["datosPersonales"])
+                    tipo = input("¿Deseas cambiar dirección (1) o número (2)? Ingresa 1 o 2: ")
+                    if tipo == "1":
+                        while True:
+                            direccion = input("Ingresa la nueva dirección: ")
+                            if re.match(r'^[a-zA-Z0-9\sáéíóúñÁÉÍÓÚÑ#\-/.,()]+$', direccion):
+                                if len(direccion) >= 5:
+                                    print("Dirección valida ")
+                                    usuarios[usuario_id]["datosPersonales"]["dirección"] = direccion
+                                    print("Dirección actualizada.")
+                                    break
+                                else:
+                                    print("La dirección debe contener al menos 5 caracteres")
+                            else:
+                                print("Error: La dirección solo puede contener letras, números, espacios, #, -, /, ., ,, () y acentos.")
+                    elif tipo == "2":
+                        while True:
+                            celular_numero = input("Ingresa el nuevo número de celular: ")
+                            if celular_numero.isdigit() and len(celular_numero) == 10:
+                                usuarios[usuario_id]["datosPersonales"]["contacto"] = celular_numero
+                                print("Número actualizado.")
+                                break
+                            else:
+                                print("El número de celular no es válido")
+                    else:
+                        print("Opción inválida.")
 
-        else:
-            print("Opción inválida.")
+                elif seleccione_act == 3:
+                    tipo = input("¿Deseas añadir habilidad (1) o referencia (2)? Ingresa 1 o 2: ")
+                    if tipo == "1":
+                        while True:
+                            habilidad = input("Ingresa una habilidad: ")
+                            if habilidad.replace(" ", "").isalpha():
+                                if habilidad not in usuarios[usuario_id]["habilidadesAdicionales"]:
+                                    usuarios[usuario_id]["habilidadesAdicionales"].append(habilidad)
+                                    print("Habilidad añadida.")
+                                    break
+                                else:
+                                    print("Error: La habilidad ya existe.")
+                            else:
+                                print("Ingrese texto válido\n")
+                    elif tipo == "2":
+                        while True:
+                            nombreRef = input("Ingresa el nombre de la referencia: ")
+                            if nombreRef.replace(" ", "").isalpha():
+                                break
+                            print("Ingresa un nombre válido")
+                        while True:
+                            relacion = input("Ingresa la relación con esta persona: ")
+                            if relacion.replace(" ", "").isalpha():
+                                break
+                            print("Ingresa un dato válido")
+                        while True:
+                            telefonoRef = input("Ingresa el teléfono de la referencia: ")
+                            if telefonoRef.isdigit() and len(telefonoRef) == 10:
+                                break
+                            print("Ingresa un teléfono válido")
+                        referencias = referenciasDict(nombreRef, relacion, telefonoRef)
+                        usuarios[usuario_id]["referenciasPersonales"].append(referencias)
+                        print("Referencia añadida.")
+                    else:
+                        print("Opción inválida.")
 
-        # Actualizar hoja de vida y JSON
-        generar_hoja_de_vida(usuarios[usuario_id], f"hoja_vida_{usuario_id}.txt")
-        generarJsonCompleto(usuarios)
+                elif seleccione_act == 4:
+                    break
+
+                else:
+                    print("Opción inválida.")
+                # Actualizar hoja de vida y JSON
+                generar_hoja_de_vida(usuarios[usuario_id], f"hoja_vida_{usuario_id}.txt")
+                generarJsonCompleto(usuarios)
     
+    if option == "4":
+        while True:
+            tipoExportación=input("¿Qué desea exportar? 1.Hojas de vida con experiencia laboral por encima de un número dado / 2. Exportar candidatos con certificación o formación específica / 3. Exportar todas las hojas de vida: ")
+            if tipoExportación.isdigit() and int(tipoExportación) in [1, 2, 3]:
+                if tipoExportación == "1":
+                    limite = input("Ingrese el número mínimo de años de experiencia: ")
+                    if limite.isdigit():
+                        filtrados = filtrarHojasAños(usuarios, int(limite))
+                        if len(filtrados) == 0:
+                            print("No se encontraron hojas de vida con esa cantidad de experiencia.")
+                        else:
+                            generarJsonAños(filtrados)
+                            print(f"Exportadas hojas de vida con al menos {limite} años de experiencia.")
+                    else:
+                        print("Por favor ingrese un número válido.")
+                elif tipoExportación == "2":
+                    while True:
+                        try:
+                            select=int(input("Desea filtrar por:  1. Título profesional o por 2. Habilidades específicas: "))
+                            if select in [1, 2]:
+                                break
+                            else:
+                                print("Ingrese un valor válido (1/2)")
+                        except ValueError:
+                            print("Ingrese un valor válido (1/2)")
+                    if select==1:
+                        formacion = input("Ingrese el título o certificación a buscar: ")
+                        filtrados = filtrarFormación(usuarios, formacion)
+                        if len(filtrados) == 0:
+                            print("No se encontraron hojas de vida con esa formación.")
+                        else:
+                            generarJsonFormacion(filtrados)
+                            print(f"Exportadas hojas de vida con formación: {formacion}")
+                    elif select==2:
+                        habs=input("Ingrese la habilidad específica a buscar: ")
+                        filtroHabs= filtrarHabilidades(usuarios, habs)
+                        if len(filtroHabs) == 0:
+                            print("No se encontraron hojas de vida con esa habilidad.")
+                        else:
+                            generarJsonHabilidades(filtroHabs)
+                            print(f"Exportadas hojas de vida con habilidades: {habs}")
+                elif tipoExportación == "3":
+                    generarJsonCompleto(usuarios)
+                    print("Exportadas todas las hojas de vida.")
+                break
+            else:
+                print("Opción inválida. Intente de nuevo.")
+                
+    if option == "5":
+        print("Gracias, vuelva pronto!")
+        Menu=False
